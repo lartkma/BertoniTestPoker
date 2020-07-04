@@ -31,4 +31,12 @@ public enum CardValue {
         return value;
     }
     
+    public static CardValue getBySymbol(String symbol) {
+        for (CardValue value : values()) {
+            if (value.getSymbol().equals(symbol)) {
+                return value;
+            }
+        }
+        throw new IllegalArgumentException("No symbol " + symbol);
+    }
 }

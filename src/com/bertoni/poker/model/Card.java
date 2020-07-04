@@ -18,4 +18,8 @@ public class Card {
         return value.getValue();
     }
 
+    public static Card getBySymbol(String symbol) {
+        return new Card(Suit.getBySymbol(symbol.substring(1, 2)),
+                CardValue.getBySymbol(symbol.substring(0, 1)));
+    }
 }

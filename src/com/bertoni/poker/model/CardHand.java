@@ -7,31 +7,31 @@ import java.util.List;
 import java.util.Map.Entry;
 
 public class CardHand implements Comparable<CardHand> {
-    
+
     private static final int CARDS_IN_HAND = 5;
-    
+
     private List<Card> cards;
     private HandRank rank;
     private int rankValue;
-    
+
     public CardHand(Card card1, Card card2, Card card3, Card card4, Card card5) {
         this.cards = new ArrayList<>(Arrays.asList(card1, card2, card3, card4, card5));
         evaluateHand(this.cards);
     }
-    
+
     private void evaluateHand(List<Card> cards) {
         boolean consecutive = false;
 
         cards.sort((c1, c2) -> c2.getNumericalValue() - c1.getNumericalValue()); // Highest to lowest
-        if (cards.get(0).getNumericalValue() - cards.get(1).getNumericalValue() == 1 &&
-                cards.get(1).getNumericalValue() - cards.get(2).getNumericalValue() == 1 &&
-                cards.get(2).getNumericalValue() - cards.get(3).getNumericalValue() == 1 &&
-                cards.get(3).getNumericalValue() - cards.get(4).getNumericalValue() == 1) {
+        if (cards.get(0).getNumericalValue() - cards.get(1).getNumericalValue() == 1
+                && cards.get(1).getNumericalValue() - cards.get(2).getNumericalValue() == 1
+                && cards.get(2).getNumericalValue() - cards.get(3).getNumericalValue() == 1
+                && cards.get(3).getNumericalValue() - cards.get(4).getNumericalValue() == 1) {
             consecutive = true;
             this.rank = HandRank.STRAIGHT;
             this.rankValue = cards.get(0).getNumericalValue();
         }
-        
+
         if (cards.stream().allMatch(c -> c.getSuit() == cards.get(0).getSuit())) {
             if (consecutive) {
                 if (this.rankValue == CardValue.ACE.getValue()) {
@@ -44,25 +44,26 @@ public class CardHand implements Comparable<CardHand> {
                 this.rankValue = cards.get(0).getNumericalValue();
             }
         }
-        
-        // If a royal flush or straight flush has been found, stop, there is not any higher rank
+
+        // If a royal flush or straight flush has been found, stop, there is not any
+        // higher rank
         if (this.rank != HandRank.ROYAL_FLUSH && this.rank != HandRank.STRAIGHT_FLUSH) {
             LinkedHashMap<Integer, Integer> counts = new LinkedHashMap<>();
             cards.forEach(c -> {
                 counts.putIfAbsent(c.getNumericalValue(), 0);
                 counts.put(c.getNumericalValue(), counts.get(c.getNumericalValue()) + 1);
             });
-            
+
             int fourValue = -1, threeValue = -1, pairValue = -1, secondPairValue = -1;
             for (Entry<Integer, Integer> entry : counts.entrySet()) {
                 int value = entry.getKey();
                 int count = entry.getValue();
-                
+
                 if (count >= 4) {
                     fourValue = value;
                 } else if (count == 3) {
                     threeValue = value;
-                } else if (count == 2){
+                } else if (count == 2) {
                     if (pairValue == -1) {
                         pairValue = value;
                     } else {
@@ -70,7 +71,7 @@ public class CardHand implements Comparable<CardHand> {
                     }
                 }
             }
-            
+
             if (fourValue != -1) {
                 this.rank = HandRank.FOUR_KIND;
                 this.rankValue = fourValue;
@@ -92,7 +93,7 @@ public class CardHand implements Comparable<CardHand> {
                     this.rankValue = pairValue;
                 }
             }
-            
+
             // If none found
             if (this.rank == null) {
                 this.rank = HandRank.HIGH_CARD;
@@ -100,19 +101,44 @@ public class CardHand implements Comparable<CardHand> {
             }
         }
     }
-    
+
     public HandRank getRank() {
         return rank;
     }
-    
+
     public int getRankValue() {
         return rankValue;
+    }
+    
+    public double getProbabilityWinning() {
+        long combinationsThis = this.rank.getNumCombinations();
+        long combinationsHigherRank = this.rank.getHigherRemainCombinations();
+        long combinationsSameRankHigherOrSameValue = 0;
+        
+        // Good enough assumption: the different rank values are evenly distributed 
+        // on all combinations of the same rank
+        if (this.rank == HandRank.ROYAL_FLUSH) {
+            combinationsSameRankHigherOrSameValue = combinationsThis;
+        } else if (this.rank == HandRank.STRAIGHT_FLUSH) {
+            // there are only 9 possible stairs, and shouldn't include the A
+            int typesHigherOrSame = 14 - this.rankValue;
+            combinationsSameRankHigherOrSameValue = (typesHigherOrSame * combinationsThis) / 9;
+        } else if (this.rank == HandRank.STRAIGHT) {
+            // there are only 10 possible stairs, including the A
+            int typesHigherOrSame = 15 - this.rankValue;
+            combinationsSameRankHigherOrSameValue = (typesHigherOrSame * combinationsThis) / 10;
+        } else {
+            int typesHigherOrSame = 15 - this.rankValue;
+            combinationsSameRankHigherOrSameValue = (typesHigherOrSame * combinationsThis) / 13;
+        }
+        
+        return 1 - (combinationsHigherRank + combinationsSameRankHigherOrSameValue) / (HandRank.TOTAL_COMBINATIONS * 1.0);
     }
 
     @Override
     public int compareTo(CardHand other) {
         int compareRanks = this.rank.compareTo(other.rank);
-        
+
         if (compareRanks != 0) {
             return compareRanks > 0 ? 1 : -1;
         } else {

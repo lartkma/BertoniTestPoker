@@ -134,12 +134,16 @@ public class CardHandTest {
                 new Card(Suit.SPADES, CardValue.SIX),
                 new Card(Suit.SPADES, CardValue.SEVEN),
                 new Card(Suit.DIAMONDS, CardValue.KING));
+        assertEquals(HandRank.ONE_PAIR, hand1.getRank());
+        assertEquals(CardValue.FIVE.getValue(), hand1.getRankValue());
         
         CardHand hand2 = new CardHand(new Card(Suit.CLUBS, CardValue.TWO),
                 new Card(Suit.SPADES, CardValue.THREE),
                 new Card(Suit.SPADES, CardValue.EIGHT),
                 new Card(Suit.DIAMONDS, CardValue.EIGHT),
                 new Card(Suit.DIAMONDS, CardValue.TEN));
+        assertEquals(HandRank.ONE_PAIR, hand2.getRank());
+        assertEquals(CardValue.EIGHT.getValue(), hand2.getRankValue());
         
         assertEquals(-1, hand1.compareTo(hand2));
     }
@@ -151,12 +155,16 @@ public class CardHandTest {
                 new Card(Suit.SPADES, CardValue.NINE),
                 new Card(Suit.SPADES, CardValue.JACK),
                 new Card(Suit.CLUBS, CardValue.ACE));
+        assertEquals(HandRank.HIGH_CARD, hand1.getRank());
+        assertEquals(CardValue.ACE.getValue(), hand1.getRankValue());
         
         CardHand hand2 = new CardHand(new Card(Suit.CLUBS, CardValue.TWO),
                 new Card(Suit.CLUBS, CardValue.FIVE),
                 new Card(Suit.DIAMONDS, CardValue.SEVEN),
                 new Card(Suit.SPADES, CardValue.EIGHT),
                 new Card(Suit.HEARTS, CardValue.QUEEN));
+        assertEquals(HandRank.HIGH_CARD, hand2.getRank());
+        assertEquals(CardValue.QUEEN.getValue(), hand2.getRankValue());
         
         assertEquals(1, hand1.compareTo(hand2));
     }
@@ -168,12 +176,16 @@ public class CardHandTest {
                 new Card(Suit.SPADES, CardValue.ACE),
                 new Card(Suit.HEARTS, CardValue.ACE),
                 new Card(Suit.CLUBS, CardValue.ACE));
+        assertEquals(HandRank.THREE_KIND, hand1.getRank());
+        assertEquals(CardValue.ACE.getValue(), hand1.getRankValue());
         
         CardHand hand2 = new CardHand(new Card(Suit.DIAMONDS, CardValue.THREE),
                 new Card(Suit.DIAMONDS, CardValue.SIX),
                 new Card(Suit.DIAMONDS, CardValue.SEVEN),
                 new Card(Suit.DIAMONDS, CardValue.TEN),
                 new Card(Suit.DIAMONDS, CardValue.QUEEN));
+        assertEquals(HandRank.FLUSH, hand2.getRank());
+        assertEquals(CardValue.QUEEN.getValue(), hand2.getRankValue());
         
         assertEquals(-1, hand1.compareTo(hand2));
     }
@@ -185,12 +197,16 @@ public class CardHandTest {
                 new Card(Suit.HEARTS, CardValue.NINE),
                 new Card(Suit.HEARTS, CardValue.QUEEN),
                 new Card(Suit.CLUBS, CardValue.QUEEN));
+        assertEquals(HandRank.ONE_PAIR, hand1.getRank());
+        assertEquals(CardValue.QUEEN.getValue(), hand1.getRankValue());
         
         CardHand hand2 = new CardHand(new Card(Suit.DIAMONDS, CardValue.THREE),
                 new Card(Suit.DIAMONDS, CardValue.SIX),
                 new Card(Suit.HEARTS, CardValue.SEVEN),
                 new Card(Suit.DIAMONDS, CardValue.QUEEN),
                 new Card(Suit.SPADES, CardValue.QUEEN));
+        assertEquals(HandRank.ONE_PAIR, hand2.getRank());
+        assertEquals(CardValue.QUEEN.getValue(), hand2.getRankValue());
         
         assertEquals(1, hand1.compareTo(hand2));
     }
@@ -202,12 +218,16 @@ public class CardHandTest {
                 new Card(Suit.CLUBS, CardValue.FOUR),
                 new Card(Suit.DIAMONDS, CardValue.FOUR),
                 new Card(Suit.SPADES, CardValue.FOUR));
+        assertEquals(HandRank.FULL_HOUSE, hand1.getRank());
+        assertEquals(CardValue.FOUR.getValue(), hand1.getRankValue());
         
         CardHand hand2 = new CardHand(new Card(Suit.CLUBS, CardValue.THREE),
                 new Card(Suit.DIAMONDS, CardValue.THREE),
                 new Card(Suit.SPADES, CardValue.THREE),
                 new Card(Suit.SPADES, CardValue.NINE),
                 new Card(Suit.DIAMONDS, CardValue.NINE));
+        assertEquals(HandRank.FULL_HOUSE, hand2.getRank());
+        assertEquals(CardValue.THREE.getValue(), hand2.getRankValue());
         
         assertEquals(1, hand1.compareTo(hand2));
     }
