@@ -58,6 +58,8 @@ public class PokerApp {
                 writer.write(String.format("           %5.2f%%            |           %5.2f%%            \r\n",
                         player1Odds.get(i), player2Odds.get(i)));
             }
+            
+            System.out.println("File written successfully");
         } catch (IOException e) {
             e.printStackTrace();
         }
